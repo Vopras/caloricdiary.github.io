@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Caloric diary</title>
+
+  <!-- Firebase SDKs - Compat version -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase Initialization -->
+  <script src="./firebaseInit.js"></script>
+  <!-- Vue.js -->
+  <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+  <!-- Vue App and Components -->
+  <script src="./main.js"></script>
+  <script src="./components/Day.js"></script>
+  <script src="./components/Food.js"></script>
+  <script src="./components/Page.js"></script>
+  <script src="./components/Stats.js"></script>
+  <script src="./components/Reference.js"></script>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+
+  </head>
+  <body>
+    <div id="app">
+        <page> </page>
+    </div>
+
+
+
+    <!-- Mount App -->
+    <script>
+      const mountedApp = app.mount('#app')
+    </script>
+
+  </body>
+</html>
