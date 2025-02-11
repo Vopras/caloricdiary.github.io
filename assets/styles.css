@@ -1,0 +1,51 @@
+ /* Container to hold the three divs */
+ .container {
+    display: flex;
+    height: 100vh; /* 100% of the viewport height */
+  }
+  /* Styles for the first div */
+  .first {
+    width: 20%;
+    background-color: lightblue;
+  }
+  /* Styles for the second div */
+  .second {
+    width: 60%;
+    background-color: lightcoral;
+  }
+  /* Styles for the third div */
+  .third {
+    width: 20%;
+    background-color: lightgreen;
+  }
+  .day {
+    /* background-color: black; */
+    width: 100%;
+  }
+  .foodIngredients {
+    /* background-color: black; */
+    width: 31.66%;
+    padding: 2px 2px;
+    margin: 1px 0;
+    box-sizing: border-box;
+  }
+  .reference_foods {
+    /* background-color: black; */
+    position: fixed;
+    /* left: 0; */
+    bottom: 0;
+  }
+  .stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This pushes the child element to the bottom */
+    height: 100%; /* Ensure the parent container has a defined height */
+  }
+  .current_reference_foods{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .removeIngredient {
+    width: 5%;
+  }
