@@ -6,23 +6,24 @@ app.component('page', {
                 ('0' + ( new Date().getMonth() + 1)).slice(-2), // Months are 0-based; add leading zero if needed
                 new Date().getFullYear()
             ].join('-'), // Join to form dd-mm-yyyy
-            meals: [] // Add this property to store the meals
+            meals: [], // Add this property to store the meals
+            sidebarOpen: false  // add this
         }   
     },
     template:
     /*html*/
     `
     <div class="container">
-        <div class="first">
-            <!-- Content for the first div -->
+        <button class="hamburger" @click="sidebarOpen = true">☰</button>
+        <div class="sidebar-overlay" :class="{ open: sidebarOpen }" @click="sidebarOpen = false"></div>
+
+        <div class="first" :class="{ open: sidebarOpen }">
             <day @collection-selected="handleCollectionSelected"></day>
         </div>
         <div class="second">
-            <!-- Content for the second div -->
             <food :selectedDay="today" @update-meals="handleUpdateMeals"></food>
         </div>
         <div class="third">
-            <!-- Content for the third div -->
             <stats :meals="meals" :selectedDay="today"></stats>
         </div>
         <chat :selectedDay="today" @meal-saved="handleMealSaved"></chat>
@@ -31,6 +32,7 @@ app.component('page', {
     methods: {
         handleCollectionSelected(name) {
             this.today = name;
+            this.sidebarOpen = false; // closes menu after picking a day
         },
         async checkIfDayExistsAndAdd() {
             const today2 = new Date();
