@@ -562,4 +562,13 @@ button:hover { background: #2a2040; border-color: #5040a0; color: #c0a8f0; }
         width: calc(100vw - 48px);
         right: 0;
     }
+    @media (max-width: 768px) {
+    .first {
+        display: none;
+    }
+
+    .first.open {
+        display: block;
+    }
+}
 }
