@@ -25,6 +25,7 @@ app.component('page', {
             <!-- Content for the third div -->
             <stats :meals="meals" :selectedDay="today"></stats>
         </div>
+        <chat :selectedDay="today" @meal-saved="handleMealSaved"></chat>
     </div>
     `,
     methods: {
@@ -67,6 +68,11 @@ app.component('page', {
         },
         handleUpdateMeals(newMeals) {
             this.meals = newMeals;
+        },
+        handleMealSaved() {
+            const current = this.today;
+            this.today = '';
+            this.$nextTick(() => { this.today = current; });
         }
     },
     created() {
