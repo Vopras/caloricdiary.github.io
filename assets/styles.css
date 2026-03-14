@@ -763,11 +763,11 @@ select.staples-input { cursor: pointer; }
 
 @media (max-width: 768px) {
     .hamburger {
-        display: flex;
+        display: flex !important;
         position: fixed;
         top: 12px;
         left: 12px;
-        z-index: 200;
+        z-index: 9999;
         background: #2a2048;
         border: 1px solid #3a3060;
         color: #c0a0f0;
@@ -779,6 +779,7 @@ select.staples-input { cursor: pointer; }
         align-items: center;
         justify-content: center;
         padding: 0;
+        white-space: nowrap;
     }
 
     .sidebar-overlay.open {
@@ -786,39 +787,40 @@ select.staples-input { cursor: pointer; }
     }
 
     .container {
-        flex-direction: column;
-        height: auto;
+        flex-direction: column !important;
+        height: auto !important;
         min-height: 100vh;
-        overflow: visible;
+        overflow: visible !important;
     }
 
     .first {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 260px;
-        z-index: 160;
-        padding-top: 56px;
-        background: #1a1724;
-        overflow-y: auto;
+        display: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100vh !important;
+        width: 260px !important;
+        min-width: unset !important;
+        z-index: 160 !important;
+        padding-top: 56px !important;
+        background: #1a1724 !important;
+        overflow-y: auto !important;
     }
 
     .first.open {
-        display: block;
+        display: block !important;
     }
 
     .second {
-        width: 100%;
-        padding: 70px 16px 24px;
+        width: 100% !important;
+        padding: 60px 12px 24px !important;
         min-height: 60vh;
     }
 
     .third {
-        width: 100%;
-        min-width: unset;
-        border-left: none;
+        width: 100% !important;
+        min-width: unset !important;
+        border-left: none !important;
         border-top: 1px solid #1e2e1e;
         padding: 16px;
     }
@@ -845,3 +847,18 @@ select.staples-input { cursor: pointer; }
         flex-direction: column;
     }
 }
+
+.sidebar-toggle {
+    background: #2a2048;
+    border: 1px solid #3a3060;
+    color: #c0a0f0;
+    padding: 7px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.sidebar-toggle:hover { background: #362858; color: #d8c0ff; }

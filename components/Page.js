@@ -2,21 +2,19 @@ app.component('page', {
     data() {
         return {
             today: [
-                ('0' +  new Date().getDate()).slice(-2), // Add leading zero if needed and get the day
-                ('0' + ( new Date().getMonth() + 1)).slice(-2), // Months are 0-based; add leading zero if needed
+                ('0' + new Date().getDate()).slice(-2),
+                ('0' + (new Date().getMonth() + 1)).slice(-2),
                 new Date().getFullYear()
-            ].join('-'), // Join to form dd-mm-yyyy
-            meals: [] // Add this property to store the meals
-        }   
+            ].join('-'),
+            meals: [],
+            sidebarOpen: false
+        }
     },
     template:
     /*html*/
     `
     <div class="container">
-        <button class="hamburger" @click="sidebarOpen = true">☰</button>
-        <div class="sidebar-overlay" :class="{ open: sidebarOpen }" @click="sidebarOpen = false"></div>
-
-        <div class="first" :class="{ open: sidebarOpen }">
+        <div class="first" v-show="sidebarOpen">
             <day @collection-selected="handleCollectionSelected"></day>
         </div>
         <div class="second">
@@ -24,6 +22,9 @@ app.component('page', {
         </div>
         <div class="third">
             <div class="tool-buttons">
+                <button class="sidebar-toggle" @click="sidebarOpen = !sidebarOpen">
+                    {{ sidebarOpen ? '✕ Hide Days' : '☰ Days' }}
+                </button>
                 <staples></staples>
                 <calculator></calculator>
             </div>
