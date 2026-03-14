@@ -752,3 +752,7 @@ select.staples-input { cursor: pointer; }
     text-align: center;
     justify-content: center;
 }
+
+.hamburger {
+    display: none;
+}
