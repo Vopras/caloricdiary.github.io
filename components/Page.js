@@ -6,8 +6,7 @@ app.component('page', {
                 ('0' + ( new Date().getMonth() + 1)).slice(-2), // Months are 0-based; add leading zero if needed
                 new Date().getFullYear()
             ].join('-'), // Join to form dd-mm-yyyy
-            meals: [], // Add this property to store the meals
-            sidebarOpen: false  // add this
+            meals: [] // Add this property to store the meals
         }   
     },
     template:
@@ -24,6 +23,10 @@ app.component('page', {
             <food :selectedDay="today" @update-meals="handleUpdateMeals"></food>
         </div>
         <div class="third">
+            <div class="tool-buttons">
+                <staples></staples>
+                <calculator></calculator>
+            </div>
             <stats :meals="meals" :selectedDay="today"></stats>
         </div>
         <chat :selectedDay="today" @meal-saved="handleMealSaved"></chat>
@@ -32,7 +35,6 @@ app.component('page', {
     methods: {
         handleCollectionSelected(name) {
             this.today = name;
-            this.sidebarOpen = false; // closes menu after picking a day
         },
         async checkIfDayExistsAndAdd() {
             const today2 = new Date();

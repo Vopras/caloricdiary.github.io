@@ -23,7 +23,7 @@ app.component('stats', {
             </div>
             <p> {{totalCalories}} </p>
         </div>
-        <reference></reference>
+      
     </div>
     `,
     methods: {

@@ -123,53 +123,75 @@ app.component('chat', {
                 }
             }
 
-            // Add user message
             this.addMessage('user', text || 'Analyze this food photo', this.selectedPhoto);
             this.userInput = '';
             this.isLoading = true;
 
             try {
-                // Build conversation history for Gemini
-                const hasPhoto = !!this.selectedPhotoBase64;
+                // ── Fetch staples from Firestore ──
+                let referenceText = '';
+                let portionsText = '';
 
-                const systemPrompt = `You are a helpful nutrition assistant. When given a food photo, identify each food item, estimate portion sizes in grams, and estimate calories per 100g. 
-                When you have an estimate ready, format it clearly and ask the user to confirm with yes/no.
-                If the user wants changes (e.g. "change chicken to 200g"), update accordingly and ask again.
-                When the user confirms, respond with ONLY a JSON block like this (nothing else after it):
-                CONFIRMED:
-                [{"ingredient": "chicken breast", "weight": 150, "calories": 165}]`;
+                try {
+                    const refDoc = await window.db.collection('reference').doc('referenced_foods').get();
+                    if (refDoc.exists) {
+                        const foods = refDoc.data();
+                        referenceText = Object.entries(foods)
+                            .map(([name, cal]) => `${name}: ${cal} cal/100g`)
+                            .join(', ');
+                    }
+                } catch (e) { console.warn('Could not fetch reference foods', e); }
 
-                let parts = [{ text: systemPrompt + "\n\n" }];
+                try {
+                    const portDoc = await window.db.collection('reference').doc('portions').get();
+                    if (portDoc.exists && portDoc.data().list) {
+                        portionsText = portDoc.data().list
+                            .map(p => `${p.name} (${p.amount} ${p.unit} = ${p.weight}g, ${p.calories} cal/100g = ${Math.round(p.weight / 100 * p.calories)} cal total)`)
+                            .join(', ');
+                    }
+                } catch (e) { console.warn('Could not fetch portions', e); }
 
-                // Add conversation history as context
-                const historyText = this.messages.map(m => 
+                // ── Build system prompt with staples injected ──
+                let systemPrompt = `You are a helpful nutrition assistant. When given a food photo, identify each food item and provide calorie estimates.`;
+
+                if (referenceText) {
+                    systemPrompt += `\n\nThe user has provided their own calorie reference data — ALWAYS use these values instead of guessing:\n${referenceText}`;
+                }
+
+                if (portionsText) {
+                    systemPrompt += `\n\nThe user has also provided common portion sizes — use these to estimate weights accurately:\n${portionsText}`;
+                }
+
+                systemPrompt += `\n\nWhen you have an estimate ready, format it clearly and ask the user to confirm with yes/no.
+                    If the user wants changes (e.g. "change chicken to 200g"), update accordingly and ask again.
+                    When the user confirms, respond with ONLY a JSON block like this (nothing else after it):
+                    CONFIRMED:
+                    [{"ingredient": "chicken breast", "weight": 150, "calories": 165}]
+
+                    Important: the "calories" field must always be calories per 100g, not total calories.`;
+
+                // ── Build conversation history ──
+                const historyText = this.messages.map(m =>
                     `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`
                 ).join('\n');
 
-                if (historyText) {
-                    parts[0].text += "Conversation so far:\n" + historyText + "\n\nUser's latest message: " + (text || "Please analyze the food in this photo.");
-                } else {
-                    parts[0].text += "User's latest message: " + (text || "Please analyze the food in this photo.");
-                }
-
-                if (hasPhoto) {
-                    parts.push({ inline_data: { mime_type: this.selectedPhotoMime, data: this.selectedPhotoBase64 } });
-                }
+                const promptText = systemPrompt
+                    + (historyText ? '\n\nConversation so far:\n' + historyText : '')
+                    + '\n\nUser\'s latest message: ' + (text || 'Please analyze the food in this photo.');
 
                 const response = await fetch(WORKER_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         imageBase64: this.selectedPhotoBase64,
                         mimeType: this.selectedPhotoMime,
-                        prompt: parts[0].text
+                        prompt: promptText
                     })
                 });
 
                 const data = await response.json();
                 const replyText = data.candidates[0].content.parts[0].text;
 
-                // Check if confirmed
                 if (replyText.includes('CONFIRMED:')) {
                     const jsonPart = replyText.split('CONFIRMED:')[1].trim();
                     const cleaned = jsonPart.replace(/```json|```/g, '').trim();
@@ -182,7 +204,7 @@ app.component('chat', {
                 this.clearPhoto();
 
             } catch (error) {
-                console.error("Chat error:", error, JSON.stringify(error));
+                console.error('Chat error:', error);
                 this.addMessage('assistant', 'Sorry, something went wrong: ' + error.message);
             } finally {
                 this.isLoading = false;
